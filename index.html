@@ -127,6 +127,12 @@
 
 			}
 
+			function Line( point1, point2 ){
+
+
+
+			}
+
 			function drawLine( point1, point2 ) {
 
 			    ctx.beginPath();
@@ -144,6 +150,7 @@
 
 			}
 
+			var line_length = 100;
 			var first_point = new Point( 10, 10);
 			var next_point = new Point( 100, 100);
 
@@ -163,8 +170,7 @@
 				// 	}
 				// console.log( values )
 				// console.log( values );
-				first_point.x = ball.x;
-				first_point.y = ball.y;
+
 
 				turnLeft();
 				// turnRight();
@@ -216,22 +222,43 @@
 			}
 
 			function drawRectangle() {
+
 				//draw a circle
 				ctx.strokeStyle = "grey";
 				ctx.fillStyle = "grey";
 				ctx.fillRect( rectangle.x, rectangle.y, rectangle.width, rectangle.height )
+
 			}
-			function render(){
+
+			function render() {
+
 				drawRectangle();
 				drawBall();
+
+				first_point.x = ball.x;
+				first_point.y = ball.y;
+
+				next_point.x = line_length*Math.sin( ball.theta ) + ball.x;
+				next_point.y = line_length*Math.cos( ball.theta ) + ball.y;				
+
 				drawLine( first_point, next_point );
+
+				next_point.x = line_length*Math.sin( ball.theta - Math.PI / 5 ) + ball.x;
+				next_point.y = line_length*Math.cos( ball.theta - Math.PI / 5 ) + ball.y;						
+
+				drawLine( first_point, next_point );		
+				
+
 			}
+
 			function loop(){
+
 				clear();
 				update();
 				render();
 
 			}
+
 			setInterval( loop, 1000/60 );
 
 			// shim layer with setTimeout fallback
