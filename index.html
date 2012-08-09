@@ -59,15 +59,18 @@
 				"ax" : 0,
 				"ay" : 0,
 				"dx" : 0,
-				"dy" : 1
+				"dy" : 0
 			}
 			var rectangle = {
 				"x" : 100,
 				"y" : 100,
-				"width" : canvas.width - 400,
-				"height" : 140
+				"width" : 140,
+				"height" : canvas.height 
 
 			}
+
+			var fitness = 0;
+
 			function clear() {
 				// Store the current transformation matrix
 				ctx.save();
@@ -204,18 +207,47 @@
 
 				// if ( counter == nets )
 				// 	counter = 0
-				counter++;
+				// counter++;
 
-				if (counter > 250 )
-					counter = 0
+				// if (counter > 250 )
+				// 	counter = 0
+
+
+
+				var values = net_array[index].run( vector );
+				// console.log(values)
+
+
+				fitness++;
+
+
+				if ( ball.x < rectangle.x || ball.x > rectangle.x + rectangle.width || ball.y < rectangle.y || ball.y > rectangle.y + rectangle.height) {
+					
+					console.log( fitness );
+					
+			ball = {
+				"x" : 150,
+				"y" : 150,
+				"speed" : 5,
+				"radius" : 10,
+				"outerR" : 30,
+				"theta" : 0,
+				"vx" : 0,
+				"vy" : 0,
+				"ax" : 0,
+				"ay" : 0,
+				"dx" : 0,
+				"dy" : 0
+			}					
+
+					fitness = 0;
+
 					if ( index < 14)
 						index++;
 					else
 						index = 0;
 
-
-				var values = net_array[index].run( vector );
-				console.log(values)
+				}
 				// console.log(values)
 
 				if ( values[0] > values[1] ){
@@ -232,7 +264,7 @@
 				// console.log( values );
 
 
-				turnLeft();
+				// turnLeft();
 				// turnRight();
 				// console.log( ball.vx, ball.vy );
 				// if ( !ball.dx ) {
@@ -306,10 +338,10 @@
 			}
 
 			var wall_left_up = new Point( rectangle.x, rectangle.y );
-			var wall_right_up = new Point( rectangle.x + rectangle.width, rectangle.y );
+			var wall_right_up = new Point( rectangle.x, rectangle.y + rectangle.height );
 			var wall_line_up = new Line( wall_left_up, wall_right_up);	
 
-			var wall_left_down = new Point( rectangle.x, rectangle.y + rectangle.height );
+			var wall_left_down = new Point( rectangle.x + rectangle.width, rectangle.y );
 			var wall_right_down = new Point( rectangle.x + rectangle.width, rectangle.y + rectangle.height );
 			var wall_line_down = new Line( wall_left_down, wall_right_down);	
 
