@@ -16,12 +16,14 @@
 		<canvas id="canvas"></canvas>
 		<script>
 			var canvas = document.getElementById("canvas");
+
 			canvas.width = window.innerWidth;
 			canvas.height = window.innerHeight;
+
 			var ctx = canvas.getContext("2d");
 			var ball = {
-				"x" : 100,
-				"y" : 100,
+				"x" : 200,
+				"y" : 200,
 				"radius" : 10,
 				"outerR" : 30,
 				"vx" : 0,
@@ -32,9 +34,9 @@
 				"dy" : 1
 			}
 			var rectangle = {
-				"x" : 0,
-				"y" : 0,
-				"width" : 200,
+				"x" : 100,
+				"y" : 100,
+				"width" : canvas.width - 400,
 				"height" : 200
 
 			}
@@ -159,5 +161,7 @@
 			// 60fps with the setTimeout fallback.
 
 		</script>
+
+		<script type="text/javascript" src="./brain-0.6.0.js"></script>
 	</body>
 </html>
