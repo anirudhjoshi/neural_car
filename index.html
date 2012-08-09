@@ -238,15 +238,15 @@
 				first_point.x = ball.x;
 				first_point.y = ball.y;
 
-				next_point.x = line_length*Math.sin( ball.theta ) + ball.x;
-				next_point.y = line_length*Math.cos( ball.theta ) + ball.y;				
 
-				drawLine( first_point, next_point );
+				for ( var i = 0; i < 6; i ++ ) {
 
-				next_point.x = line_length*Math.sin( ball.theta - Math.PI / 5 ) + ball.x;
-				next_point.y = line_length*Math.cos( ball.theta - Math.PI / 5 ) + ball.y;						
+					next_point.x = line_length*Math.sin( ball.theta - Math.PI / 2 + i * Math.PI / 5 ) + ball.x;
+					next_point.y = line_length*Math.cos( ball.theta - Math.PI / 2 + i * Math.PI / 5 ) + ball.y;						
+					drawLine( first_point, next_point );		
 
-				drawLine( first_point, next_point );		
+				}
+
 				
 
 			}
