@@ -46,16 +46,18 @@
 			canvas.width = window.innerWidth;
 			canvas.height = window.innerHeight;
 
+			var speed_win = 60;
+
 			var ctx = canvas.getContext("2d");
 			var ball = {
 				"x" : 150,
 				"y" : 150,
-				"speed" : 5,
+				"speed" : speed_win,
 				"radius" : 10,
 				"outerR" : 30,
 				"theta" : 0,
 				"vx" : 0,
-				"vy" : 0,
+				"vy" : 10,
 				"ax" : 0,
 				"ay" : 0,
 				"dx" : 0,
@@ -138,6 +140,8 @@
 
 			}
 
+			// http://actionsnippet.com/?p=956
+
 			function lineIntersection( line1, line2 ) {
 
 				var ip = new Point();
@@ -202,6 +206,10 @@
 
 			var index = 0;
 			var counter = 0;
+			var fitnesses = new Array(15);
+			var success = new Array(15);
+
+						var avg = 0;	
 
 			function updateBall(){
 
@@ -218,22 +226,27 @@
 				// console.log(values)
 
 
-				fitness++;
+				// fitness++;
 
 
 				if ( ball.x < rectangle.x || ball.x > rectangle.x + rectangle.width || ball.y < rectangle.y || ball.y > rectangle.y + rectangle.height) {
 					
-					console.log( fitness );
+					fitness = ball.y - rectangle.y;
+
+
+					fitnesses[index] = fitness;
+
+					avg += fitness;
 					
 			ball = {
 				"x" : 150,
 				"y" : 150,
-				"speed" : 5,
+				"speed" : speed_win,
 				"radius" : 10,
 				"outerR" : 30,
 				"theta" : 0,
 				"vx" : 0,
-				"vy" : 0,
+				"vy" : 1,
 				"ax" : 0,
 				"ay" : 0,
 				"dx" : 0,
@@ -242,24 +255,59 @@
 
 					fitness = 0;
 
-					if ( index < 14)
+					if ( index < 14) {
 						index++;
-					else
+					}
+					else {
+
+						avg = avg / 15;
+
+						console.log( avg );
+						var s = 0;
+
+						for ( var d = 0; d < 14; d ++ ){
+
+							var cur_fit = fitnesses[d];
+
+							if ( cur_fit > avg ){
+
+								success[s] = net_array[d];
+								s++;
+
+							}
+
+						}
+
+						console.log( success );
+
+						for ( var g = 0; g < 14; g++ ){
+
+							var l_results = crossBreed( success[Math.floor(Math.random()*s)], success[Math.floor(Math.random()*s)] );
+
+							net_array[g] = l_results[Math.floor(Math.random()*2)];
+
+
+						}
+
 						index = 0;
+
+						}
 
 				}
 				// console.log(values)
 
-				if ( values[0] > values[1] ){
+				if ( values[0] - values[1] > 0.05 ){
 
 					turnLeft()
 
 					}
-				else {
+				else if ( values[1] - values[0] > 0.05 ) {
 
 					turnRight()
 
 					}
+
+					console.log(values)
 				// console.log( values )
 				// console.log( values );
 
@@ -293,6 +341,49 @@
 				ball.y += ball.vy / 10;
 
 			}
+
+			//Galgo - neural networks http://www.youtube.com/watch?v=0Str0Rdkxxo
+
+			function crossBreed( g1, g2 )
+			{
+				// Select a random cross over point.
+				// totalWeights = n1.weights.size();
+
+				var totalWeights = 8; // more general
+				var crossover = Math.random() % totalWeights;
+
+				baby1 = new brain.NeuralNetwork({
+   						hiddenLayers: [8],
+   						learningRate: 0.6
+					});
+				baby1.train([{input: [100*Math.random(), 100*Math.random(), 100*Math.random(), 100*Math.random(), 100*Math.random()], output: [1*Math.random(),1*Math.random()]}])
+				baby2 = new brain.NeuralNetwork({
+   						hiddenLayers: [8],
+   						learningRate: 0.6
+					});
+
+				
+
+				baby2.train([{input: [100*Math.random(), 100*Math.random(), 100*Math.random(), 100*Math.random(), 100*Math.random()], output: [1*Math.random(),1*Math.random()]}])				
+
+				// console.log( baby1, baby2, g1, g2 );
+				// Go from start to crossover point, copying the weights from g1.
+				for (var i = 0; i < crossover; i++)
+				{
+					baby1.weights[1][i] = g1.weights[1][i];
+					baby2.weights[1][i] = g2.weights[1][i];
+				}
+				// Go from start to crossover point, copying the weights from g2 to child.
+				for (var i = crossover; i < totalWeights; i++)
+				{
+					baby1.weights[1][i] = g2.weights[1][i];
+					baby2.weights[1][i] = g1.weights[1][i];
+				}
+
+				return [ baby1, baby2 ];
+
+			}
+
 			function update(){
 				updateBall();
 
@@ -343,7 +434,7 @@
 
 			var wall_left_down = new Point( rectangle.x + rectangle.width, rectangle.y );
 			var wall_right_down = new Point( rectangle.x + rectangle.width, rectangle.y + rectangle.height );
-			var wall_line_down = new Line( wall_left_down, wall_right_down);	
+			var wall_line_down = new Line( wall_left_down, wall_right_down);
 
 			var vector = new Array(5);
 
