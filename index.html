@@ -29,15 +29,15 @@
 				"ax" : 0,
 				"ay" : 0,
 				"dx" : 0,
-				"dy" : 1
-			}
+				"dy" : 1,
+				"head" : 0
+			};
 			var rectangle = {
 				"x" : 0,
 				"y" : 0,
 				"width" : 200,
 				"height" : 200
-
-			}
+			};
 			function clear() {
 				// Store the current transformation matrix
 				ctx.save();
@@ -51,10 +51,10 @@
 				"left": { "code" : 65, "on": false },
 				"up": { "code" : 87, "on": false },
 				"right": { "code" : 68, "on": false },
-				"down": { "code" : 83, "on": false },
-			}                     
-			window.addEventListener("keydown", function(e) {
-				for(var i in keyMap) {
+				"down": { "code" : 83, "on": false }
+			};
+			window.addEventListener("keydown", function (e) {
+				for (var i in keyMap) {
 					if( e.keyCode === keyMap[i].code ) {
 						keyMap[i].on = true;
 						break;
@@ -96,11 +96,50 @@
 				ball.vy += ball.ay;
 				ball.x += ball.vx;
 				ball.y += ball.vy;
+				if(ball.vx==0){
+					if(ball.vy>0)
+						head = Math.PI/2;
+					else
+						head = -1 * Math.PI/2;
+				}else{
+					head = Math.atan(ball.vy/ball.vx);
+				}
+			}
+			function fetchInfo(){
+				distance = {
+					"head" : 0,
+					"sideLM" : 0,
+					"sideRM" : 0,
+					"sideL" : 0,
+					"sideR" : 0
+				};
+				centreX = ball.x;
+				centreY = ball.y;
+				radi = ball.radius;
+				outer = ball.outerR;
+				edgeWest = rectangle.x;
+				edgeEast = rectangle.x + rectangle.width;
+				edgeNorth = rectangle.y;
+				edgeSouth = rectangle.y + rectangle.height;
+
+				upORdown = (ball.vy>0)1:-1;
+				headx = outer*Math.sin(ball.head)*upORdown;
+				heady = outer*Math.cos(ball.head)*upORdown;
+				sideLMx = outer*Math.sin(ball.head+Math.PI/4)*upORdown;
+				sideLMy = outer*Math.cos(ball.head+Math.PI/4)*upORdown;
+				sideRMx = outer*Math.sin(ball.head-Math.PI/4)*upORdown;
+				sideRMy = outer*Math.cos(ball.head-Math.PI/4)*upORdown;
+				sideLx = outer*Math.sin(ball.head+Math.PI/2)*upORdown;
+				sideLy = outer*Math.cos(ball.head+Math.PI/2)*upORdown;
+				sideRx = outer*Math.sin(ball.head-Math.PI/2)*upORdown;
+				sideRy = outer*Math.cos(ball.head-Math.PI/2)*upORdown;
+
+				
 
 			}
 			function update(){
 				updateBall();
-
+				fetchInfo();
 			}
 			function drawBall() {
 				//draw a circle
