@@ -14,6 +14,7 @@
 	</head>
 	<body>
 		<canvas id="canvas"></canvas>
+		<button onClick="running = !running;">Switch</button>
 
 
 		<script type="text/javascript" src="./brain-0.6.0.js"></script>		
@@ -30,7 +31,7 @@
    						learningRate: 0.6
 					});
 
-				net_array[i].train([{input: [10*Math.random(), 10*Math.random(), 10*Math.random(), 10*Math.random(), 10*Math.random()], output: [1*Math.random(),1*Math.random()]}])
+				net_array[i].train([{input: [100*Math.random(), 100*Math.random(), 100*Math.random(), 100*Math.random(), 100*Math.random()], output: [1*Math.random(),1*Math.random()]}])
 
 			}
 
@@ -47,8 +48,8 @@
 
 			var ctx = canvas.getContext("2d");
 			var ball = {
-				"x" : 200,
-				"y" : 200,
+				"x" : 150,
+				"y" : 150,
 				"speed" : 5,
 				"radius" : 10,
 				"outerR" : 30,
@@ -64,7 +65,7 @@
 				"x" : 100,
 				"y" : 100,
 				"width" : canvas.width - 400,
-				"height" : 200
+				"height" : 140
 
 			}
 			function clear() {
@@ -129,7 +130,49 @@
 
 			function Line( point1, point2 ){
 
+				this.point1 = point1;
+				this.point2 = point2;
 
+			}
+
+			function lineIntersection( line1, line2 ) {
+
+				var ip = new Point();
+
+				var p1 = line1.point1;
+				var p2 = line1.point2;
+				var p3 = line2.point1;
+				var p4 = line2.point2;
+
+			    var nx, ny, dn;
+			    var x4_x3 = p4.x - p3.x;
+			    var pre2 = p4.y - p3.y;
+			    var pre3 = p2.x - p1.x;
+			    var pre4 = p2.y - p1.y;
+			    var pre5 = p1.y - p3.y;
+			    var pre6 = p1.x - p3.x;
+
+			    nx = x4_x3 * pre5 - pre2 * pre6;
+			    ny = pre3 * pre5 - pre4 * pre6;
+			    dn = pre2 * pre3 - x4_x3 * pre4;
+			    nx /= dn;
+			    ny /= dn;
+			    // has intersection
+			    if (nx>= 0 && nx <= 1 && ny>= 0 && ny <= 1) {
+
+			        ny = p1.y + nx * pre4;
+			        nx = p1.x + nx * pre3;
+			        ip.x = nx;
+			        ip.y = ny;
+
+			    } else {
+
+			        // no intersection
+		        	ip = false;
+
+			    }
+
+			    return ip
 
 			}
 
@@ -154,20 +197,37 @@
 			var first_point = new Point( 10, 10);
 			var next_point = new Point( 100, 100);
 
+			var index = 0;
+			var counter = 0;
+
 			function updateBall(){
 
 				// if ( counter == nets )
 				// 	counter = 0
+				counter++;
 
-				// var values = net_array[counter].run( [ 10*Math.random(), 10*Math.random(), 10*Math.random(), 10*Math.random(), 10*Math.random() ] )
+				if (counter > 250 )
+					counter = 0
+					if ( index < 14)
+						index++;
+					else
+						index = 0;
 
-				// if ( values[0] > 0.6 ){
-				// 	console.log(values)
-				// 	turnLeft()
-				// 	}
-				// else {
-				// 	turnRight()
-				// 	}
+
+				var values = net_array[index].run( vector );
+				console.log(values)
+				// console.log(values)
+
+				if ( values[0] > values[1] ){
+
+					turnLeft()
+
+					}
+				else {
+
+					turnRight()
+
+					}
 				// console.log( values )
 				// console.log( values );
 
@@ -221,6 +281,21 @@
 				ctx.stroke();
 			}
 
+
+
+			function drawFeeler( point ) {
+				//draw a circle
+				ctx.beginPath();
+				ctx.strokeStyle = "white";
+				ctx.lineWidth = 3;
+				ctx.fillStyle = "#ff0000";
+				ctx.arc(point.x, point.y, 1, 0, Math.PI*2, true); 
+				ctx.closePath();
+				ctx.fill();
+				ctx.stroke();
+
+			}			
+
 			function drawRectangle() {
 
 				//draw a circle
@@ -229,6 +304,18 @@
 				ctx.fillRect( rectangle.x, rectangle.y, rectangle.width, rectangle.height )
 
 			}
+
+			var wall_left_up = new Point( rectangle.x, rectangle.y );
+			var wall_right_up = new Point( rectangle.x + rectangle.width, rectangle.y );
+			var wall_line_up = new Line( wall_left_up, wall_right_up);	
+
+			var wall_left_down = new Point( rectangle.x, rectangle.y + rectangle.height );
+			var wall_right_down = new Point( rectangle.x + rectangle.width, rectangle.y + rectangle.height );
+			var wall_line_down = new Line( wall_left_down, wall_right_down);	
+
+			var vector = new Array(5);
+
+			var lines = [ wall_line_up, wall_line_down ];
 
 			function render() {
 
@@ -243,13 +330,44 @@
 
 					next_point.x = line_length*Math.sin( ball.theta - Math.PI / 2 + i * Math.PI / 4 ) + ball.x;
 					next_point.y = line_length*Math.cos( ball.theta - Math.PI / 2 + i * Math.PI / 4 ) + ball.y;						
-					drawLine( first_point, next_point );		
+					drawLine( first_point, next_point );
+
+					var segment = new Line( first_point, next_point );
+
+					for ( var j = 0; j < 2; j++ ){
+
+						var ip = lineIntersection( segment, lines[j] );
+
+						if ( ip ){
+
+							drawFeeler( ip );
+
+							vector[i] = Math.sqrt( Math.pow( ip.x - first_point.x, 2 ) + Math.pow(ip.y - first_point.y, 2) );
+
+
+						} else {
+
+							vector[i] = line_length;
+
+						}
+
+					}
 
 				}
+
+				// console.log( vector );
+
+
+
+					// console.log( ip );
+ // segment, wall_line
+				// console.log( lineIntersection( segment, wall_line ) );
 
 				
 
 			}
+
+			var running = true;
 
 			function loop(){
 
@@ -257,9 +375,13 @@
 				update();
 				render();
 
+				if ( running )
+					setTimeout( loop, 1000/60 );
+
 			}
 
-			setInterval( loop, 1000/60 );
+			loop();
+
 
 			// shim layer with setTimeout fallback
 			window.requestAnimFrame = (function(){
