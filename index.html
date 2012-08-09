@@ -239,10 +239,10 @@
 				first_point.y = ball.y;
 
 
-				for ( var i = 0; i < 6; i ++ ) {
+				for ( var i = 0; i < 5; i ++ ) {
 
-					next_point.x = line_length*Math.sin( ball.theta - Math.PI / 2 + i * Math.PI / 5 ) + ball.x;
-					next_point.y = line_length*Math.cos( ball.theta - Math.PI / 2 + i * Math.PI / 5 ) + ball.y;						
+					next_point.x = line_length*Math.sin( ball.theta - Math.PI / 2 + i * Math.PI / 4 ) + ball.x;
+					next_point.y = line_length*Math.cos( ball.theta - Math.PI / 2 + i * Math.PI / 4 ) + ball.y;						
 					drawLine( first_point, next_point );		
 
 				}
