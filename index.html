@@ -106,36 +106,59 @@
 				}
 			}
 			function fetchInfo(){
-				distance = {
+				var distance = {
 					"head" : 0,
 					"sideLM" : 0,
 					"sideRM" : 0,
 					"sideL" : 0,
 					"sideR" : 0
 				};
-				centreX = ball.x;
-				centreY = ball.y;
-				radi = ball.radius;
-				outer = ball.outerR;
-				edgeWest = rectangle.x;
-				edgeEast = rectangle.x + rectangle.width;
-				edgeNorth = rectangle.y;
-				edgeSouth = rectangle.y + rectangle.height;
+				var centreX = ball.x;
+				var centreY = ball.y;
+				var radi = ball.radius;
+				var outer = ball.outerR;
+				var edgeWest = rectangle.x;
+				var edgeEast = rectangle.x + rectangle.width;
+				var edgeNorth = rectangle.y;
+				var edgeSouth = rectangle.y + rectangle.height;
 
-				upORdown = (ball.vy>0)1:-1;
-				headx = outer*Math.sin(ball.head)*upORdown;
-				heady = outer*Math.cos(ball.head)*upORdown;
-				sideLMx = outer*Math.sin(ball.head+Math.PI/4)*upORdown;
-				sideLMy = outer*Math.cos(ball.head+Math.PI/4)*upORdown;
-				sideRMx = outer*Math.sin(ball.head-Math.PI/4)*upORdown;
-				sideRMy = outer*Math.cos(ball.head-Math.PI/4)*upORdown;
-				sideLx = outer*Math.sin(ball.head+Math.PI/2)*upORdown;
-				sideLy = outer*Math.cos(ball.head+Math.PI/2)*upORdown;
-				sideRx = outer*Math.sin(ball.head-Math.PI/2)*upORdown;
-				sideRy = outer*Math.cos(ball.head-Math.PI/2)*upORdown;
+				var upORdown;
+				if(ball.vy>0)
+					upORdown = 1;
+				else
+					upORdown = -1;
+				var headx = outer*Math.sin(ball.head)*upORdown;
+				var heady = outer*Math.cos(ball.head)*upORdown;
+				var sideLMx = outer*Math.sin(ball.head+Math.PI/4)*upORdown;
+				var sideLMy = outer*Math.cos(ball.head+Math.PI/4)*upORdown;
+				var sideRMx = outer*Math.sin(ball.head-Math.PI/4)*upORdown;
+				var sideRMy = outer*Math.cos(ball.head-Math.PI/4)*upORdown;
+				var sideLx = outer*Math.sin(ball.head+Math.PI/2)*upORdown;
+				var sideLy = outer*Math.cos(ball.head+Math.PI/2)*upORdown;
+				var sideRx = outer*Math.sin(ball.head-Math.PI/2)*upORdown;
+				var sideRy = outer*Math.cos(ball.head-Math.PI/2)*upORdown;
 
-				
-
+				var x = [ headx, sideLMx, sideRMx, sideLx, sideRx ];
+				var y = [ heady, sideLMy, sideRMy, sideLy, sideRy ];
+				var results = [ distance.head, distance.sideLM, distance.RM, distance.sideL, distance.sideR ];
+				var testx;
+				var testy;
+				var sum;
+				for(var i in x.length){
+					sum = 0;
+					testx = x[i] + centreX;
+					testy = y[i] + centreY;
+					if(testx > edgeEast)
+						sum += pow(testx-edgeEast, 2);
+					else if(testx < edgeWest)
+						sum += pow(edgeWest-testx, 2);
+					if(testy > edgeSouth)
+						sum += pow(testy-edgeSouth, 2);
+					else if(testy < edgeNorth)
+						sum += pow(edgeNorth-testy, 2);
+					results[i] = sqrt(sum);
+				}
+				console.log(distance);
 			}
 			function update(){
 				updateBall();
