@@ -120,7 +120,35 @@
 
 			var counter = 0;
 
+			function Point( x, y ){
+
+				this.x = x;
+				this.y = y;
+
+			}
+
+			function drawLine( point1, point2 ) {
+
+			    ctx.beginPath();
+
+			    ctx.strokeStyle = "white";
+			    ctx.fillStyle = "white";
+			    ctx.lineWidth = 0.5;
+
+			    ctx.moveTo( point1.x, point1.y);
+			    ctx.lineTo( point2.x, point2.y);				
+			    
+			    ctx.closePath();
+			    ctx.stroke();
+
+
+			}
+
+			var first_point = new Point( 10, 10);
+			var next_point = new Point( 100, 100);
+
 			function updateBall(){
+				drawLine( first_point, next_point );
 				// if ( counter == nets )
 				// 	counter = 0
 
