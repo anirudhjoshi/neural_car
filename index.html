@@ -1,0 +1,273 @@
+<style type="text/css">
+
+canvas {
+
+	background: black;
+}
+
+</style>
+
+<canvas id="canvas"></canvas>
+
+<script>
+
+var canvas = document.getElementById("canvas");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+var ctx = canvas.getContext("2d");
+
+// var ball = {
+
+// 	"x" : 100,
+// 	"y" : 100,
+// 	"radius" : 10,
+// 	"vx" : 0,
+// 	"vy" : 5,
+// 	"ax" : 1,
+// 	"ay" : -1,
+// 	"dx" : 0,
+// 	"dy" : 1
+	
+// }
+
+
+var ball = {
+
+	"x" : 150,
+	"y" : 150,
+	"radius" : 10,
+	"vx" : 0,
+	"vy" : 0,
+	"ax" : 0,
+	"ay" : 0,
+	"dx" : 0,
+	"dy" : 1
+	
+}
+
+var rectangle = {
+
+	"x" : 100,
+	"y" : 100,
+	"width" : 1000,
+	"height" : 100
+
+
+}
+
+function clear() {
+
+	// Store the current transformation matrix
+	ctx.save();
+
+	// Use the identity matrix while clearing the canvas
+	ctx.setTransform(1, 0, 0, 1, 0, 0);
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	// Restore the transform
+	ctx.restore();
+
+}
+
+var keyMap = {
+
+	"left": { "code" : 65, "on": false },
+	"up": { "code" : 87, "on": false },
+	"right": { "code" : 68, "on": false },
+	"down": { "code" : 83, "on": false },
+
+}                     
+
+window.addEventListener("keydown", function(e) {
+
+	for(var i in keyMap) {
+
+		if( e.keyCode === keyMap[i].code ) {
+
+				keyMap[i].on = true;
+				break;
+
+			}
+
+		}   
+
+}, false);                
+
+
+window.addEventListener("keyup", function(e) {
+
+	for(var i in keyMap) {
+
+		if( e.keyCode === keyMap[i].code ) {
+
+				keyMap[i].on = false;
+				break;
+
+			}
+
+		}                 
+
+}, false);
+           
+
+
+function updateBall(){
+/*
+	if ( ball.y + ball.radius > canvas.height ){
+
+		ball.ay = 0;
+		ball.vy = 0;
+
+	}
+
+	if ( ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0 ){
+
+		ball.ax = 0;
+		ball.vx = 0;
+
+	}
+*/
+	var speed = 0.1
+	;
+
+	if ( keyMap.left.on ) {
+
+		ball.vx += -speed;
+
+	}
+
+	if ( keyMap.right.on ) {
+
+		ball.vx += speed;
+
+	}
+
+	if ( keyMap.down.on ) {
+
+		ball.vy += speed;
+
+	}
+
+
+	if ( keyMap.up.on ) {
+
+		ball.vy += -speed;
+
+	}
+
+
+
+	// if ( !ball.dx ) {
+	// 	ball.vx += 1;
+	// }else{
+	// 	ball.vx -= 1;
+	// }
+
+	// if ( !ball.dy){
+	// 	ball.vy += 1;
+	// }else{
+	// 	ball.vy -= 1;
+	// }
+
+	// if (ball.vx > 5){
+	// 	ball.dx = 1;
+	// }else if(ball.vx < -5){
+	// 	ball.dx = 0;
+	// }
+
+	// if (ball.vy>5){
+	// 	ball.dy=1;
+	// }else if(ball.vy < -5){
+	// 	ball.dy=0;
+	// }
+	// ball.vx += ball.ax;
+	// ball.vy += ball.ay;
+
+	ball.x += ball.vx;
+	ball.y += ball.vy;
+
+}
+
+function update(){
+
+	updateBall();
+
+
+
+}
+
+function drawBall() {
+
+
+	//draw a circle
+	ctx.beginPath();
+	ctx.strokeStyle = "white";
+	ctx.fillStyle = "white";
+	ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2, true); 
+	ctx.closePath();
+	ctx.fill();
+
+
+}
+
+
+function drawRectangle() {
+
+
+	//draw a circle
+	ctx.strokeStyle = "grey";
+	ctx.fillStyle = "grey";
+
+	ctx.fillRect( rectangle.x, rectangle.y, rectangle.width, rectangle.height )
+
+
+}
+
+function render(){
+
+	
+	drawRectangle();
+	drawBall();
+
+}
+
+function loop(){
+
+	clear();
+	update();
+	render();
+
+}
+
+setInterval( loop, 1000/60 );
+
+ 
+// shim layer with setTimeout fallback
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       || 
+          window.webkitRequestAnimationFrame || 
+          window.mozRequestAnimationFrame    || 
+          window.oRequestAnimationFrame      || 
+          window.msRequestAnimationFrame     || 
+          function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+          };
+})();
+
+
+// usage: 
+// instead of setInterval(render, 16) ....
+
+(function loop(){
+  requestAnimFrame(loop());
+  // clear();
+  // update();
+  // render();
+})();
+// place the rAF *before* the render() to assure as close to 
+// 60fps with the setTimeout fallback.
+
+
+</script>
