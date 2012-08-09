@@ -14,7 +14,24 @@
 	</head>
 	<body>
 		<canvas id="canvas"></canvas>
+
+
+		<script type="text/javascript" src="./brain-0.6.0.js"></script>		
 		<script>
+
+			// var net = new brain.NeuralNetwork();
+
+
+			// net.train([{input: [0, 0], output: [0]},
+   //         			{input: [0, 1], output: [1]},
+   //         			{input: [1, 0], output: [1]},
+   //         			{input: [1, 1], output: [0]}]);
+
+
+			// var output = net.run([1, 0]);  // [0.987]
+
+			// console.log( output );
+
 			var canvas = document.getElementById("canvas");
 
 			canvas.width = window.innerWidth;
@@ -152,7 +169,7 @@
 			// usage: 
 			// instead of setInterval(render, 16) ....
 			(function(){
-				requestAnimFrame(loop());
+				// requestAnimFrame(loop());
 			  // clear();
 			  // update();
 			  // render();
@@ -161,7 +178,5 @@
 			// 60fps with the setTimeout fallback.
 
 		</script>
-
-		<script type="text/javascript" src="./brain-0.6.0.js"></script>
 	</body>
 </html>
