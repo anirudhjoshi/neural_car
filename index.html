@@ -137,7 +137,7 @@
 
 			    ctx.moveTo( point1.x, point1.y);
 			    ctx.lineTo( point2.x, point2.y);				
-			    
+
 			    ctx.closePath();
 			    ctx.stroke();
 
@@ -148,7 +148,7 @@
 			var next_point = new Point( 100, 100);
 
 			function updateBall(){
-				drawLine( first_point, next_point );
+
 				// if ( counter == nets )
 				// 	counter = 0
 
@@ -163,7 +163,10 @@
 				// 	}
 				// console.log( values )
 				// console.log( values );
-				// turnLeft();
+				first_point.x = ball.x;
+				first_point.y = ball.y;
+
+				turnLeft();
 				// turnRight();
 				// console.log( ball.vx, ball.vy );
 				// if ( !ball.dx ) {
@@ -221,6 +224,7 @@
 			function render(){
 				drawRectangle();
 				drawBall();
+				drawLine( first_point, next_point );
 			}
 			function loop(){
 				clear();
