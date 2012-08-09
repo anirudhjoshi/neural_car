@@ -20,7 +20,7 @@
 			canvas.height = window.innerHeight;
 			var ctx = canvas.getContext("2d");
 			var ball = {
-				"x" : 100,
+				"x" : 380,
 				"y" : 100,
 				"radius" : 10,
 				"outerR" : 30,
@@ -35,7 +35,7 @@
 			var rectangle = {
 				"x" : 0,
 				"y" : 0,
-				"width" : 200,
+				"width" : 300,
 				"height" : 200
 			};
 			function clear() {
@@ -97,13 +97,11 @@
 				ball.x += ball.vx;
 				ball.y += ball.vy;
 				if(ball.vx==0){
-					if(ball.vy>0)
-						head = Math.PI/2;
-					else
-						head = -1 * Math.PI/2;
+					head = (ball.vy>0)?Math.PI/2:-Math.PI/2;
 				}else{
 					head = Math.atan(ball.vy/ball.vx);
 				}
+				// console.log(head);
 			}
 			function fetchInfo(){
 				var distance = {
@@ -122,43 +120,40 @@
 				var edgeNorth = rectangle.y;
 				var edgeSouth = rectangle.y + rectangle.height;
 
-				var upORdown;
-				if(ball.vy>0)
-					upORdown = 1;
-				else
-					upORdown = -1;
-				var headx = outer*Math.sin(ball.head)*upORdown;
-				var heady = outer*Math.cos(ball.head)*upORdown;
-				var sideLMx = outer*Math.sin(ball.head+Math.PI/4)*upORdown;
-				var sideLMy = outer*Math.cos(ball.head+Math.PI/4)*upORdown;
-				var sideRMx = outer*Math.sin(ball.head-Math.PI/4)*upORdown;
-				var sideRMy = outer*Math.cos(ball.head-Math.PI/4)*upORdown;
-				var sideLx = outer*Math.sin(ball.head+Math.PI/2)*upORdown;
-				var sideLy = outer*Math.cos(ball.head+Math.PI/2)*upORdown;
-				var sideRx = outer*Math.sin(ball.head-Math.PI/2)*upORdown;
-				var sideRy = outer*Math.cos(ball.head-Math.PI/2)*upORdown;
+				var leftORright = (ball.vx>0)? 1: -1;
+				var headx = outer*Math.sin(ball.head*leftORright);
+				var heady = outer*Math.cos(ball.head*leftORright);
+				var sideLMx = outer*Math.sin(ball.head*leftORright+Math.PI/4);
+				var sideLMy = outer*Math.cos(ball.head*leftORright+Math.PI/4);
+				var sideRMx = outer*Math.sin(ball.head*leftORright-Math.PI/4);
+				var sideRMy = outer*Math.cos(ball.head*leftORright-Math.PI/4);
+				var sideLx = outer*Math.sin(ball.head*leftORright+Math.PI/2);
+				var sideLy = outer*Math.cos(ball.head*leftORright+Math.PI/2);
+				var sideRx = outer*Math.sin(ball.head*leftORright-Math.PI/2);
+				var sideRy = outer*Math.cos(ball.head*leftORright-Math.PI/2);
 
 				var x = [ headx, sideLMx, sideRMx, sideLx, sideRx ];
 				var y = [ heady, sideLMy, sideRMy, sideLy, sideRy ];
-				var results = [ distance.head, distance.sideLM, distance.RM, distance.sideL, distance.sideR ];
+				var results = [ distance.head, distance.sideLM, distance.sideRM, distance.sideL, distance.sideR ];
 				var testx;
 				var testy;
 				var sum;
-				for(var i in x.length){
+				for(var i=0; i<x.length; i++){
 					sum = 0;
 					testx = x[i] + centreX;
 					testy = y[i] + centreY;
 					if(testx > edgeEast)
-						sum += pow(testx-edgeEast, 2);
+						sum += Math.pow(outer-Math.abs(testx-edgeEast), 2);
 					else if(testx < edgeWest)
-						sum += pow(edgeWest-testx, 2);
+						sum += Math.pow(outer-Math.abs(edgeWest-testx), 2);
 					if(testy > edgeSouth)
-						sum += pow(testy-edgeSouth, 2);
+						sum += Math.pow(outer-Math.abs(testy-edgeSouth), 2);
 					else if(testy < edgeNorth)
-						sum += pow(edgeNorth-testy, 2);
-					results[i] = sqrt(sum);
+						sum += Math.pow(outer-Math.abs(edgeNorth-testy), 2);
+					results[i] = Math.sqrt(sum);
+					// console.log(sum);
 				}
-				console.log(distance);
+				console.log(results);
 			}
 			function update(){
 				updateBall();
@@ -195,7 +190,7 @@
 				update();
 				render();
 			}
-			setInterval( loop, 1000/60 );
+			setInterval( loop, 1000/10 );
 
 			// shim layer with setTimeout fallback
 			window.requestAnimFrame = (function(){
@@ -205,7 +200,7 @@
 				window.oRequestAnimationFrame      || 
 				window.msRequestAnimationFrame     || 
 				function( callback ){
-					window.setTimeout(callback, 1000 / 60);
+					window.setTimeout(callback, 1000 / 10);
 				};
 			})();
 
