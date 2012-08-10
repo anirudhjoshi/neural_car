@@ -23,6 +23,11 @@
 			var nets = 15;
 			var net_array = new Array(nets);
 
+			function quadratic( a, b, c, x ){
+
+				return a * Math.pow( x - b, 2 ) + c;
+			}
+
 			var quats = new Array(5);
 
 			var quat = new Quatenrion( new Line( new Point( 100, 50), new Point( 100, 100 ) ), new Line( new Point( 150 , 50 ), new Point( 150 , 100  ) ) );
@@ -38,7 +43,10 @@
 
 				}
 
-				var new_quat = new Quatenrion( old_quat.line2, new Line( new Point( 150 + i * 10, 50 + i * 10), new Point( 150 + i * 20, 100 + i * 20 ) ) );
+				y_val = quadratic( -1, 0, 10, i - quats.length );
+
+
+				var new_quat = new Quatenrion( old_quat.line2, new Line( new Point( 150 + y_val, 50 + y_val), new Point( 150 + y_val, 100 + y_val ) ) );
 
 				quats[i] = new_quat;
 			}
