@@ -186,21 +186,29 @@
 			var values = [ Math.random() , Math.random() ];
 			var avg = 0;	
 
-			var first = true;
+			var first = 2;
+
+			var prev_vector = [ 0, 0, 0, 0, 0 ];
+			var prev_output = [ 0, 0 ];
 
 			function updateBall(){
-				
-				if ( first ) {
-
-					console.log( vector, values );
-					first = false;
-
-				}
-				// console.log( vector, values );
-
+			
 				values = net_array[index].run( vector );
 
-			    net_array[index].train([ { input : vector, output: values } ] );
+			    net_array[index].train([ { input : prev_vector, output: prev_output } ] );
+
+			    prev_vector = vector;
+			    prev_output = values;
+
+				// console.log( prev_vector, prev_output );
+				
+				if ( first > 0 ) {
+
+					// console.log( prev_vector, prev_output );
+					// console.log( vector, values );
+					first --;
+
+				}			    
 
 				if ( ball.x < rectangle.x || ball.x > rectangle.x + rectangle.width || ball.y < rectangle.y || ball.y > rectangle.y + rectangle.height) {
 					
@@ -249,7 +257,7 @@
 						fitnesses.reverse();
 
 						success_index = fitnesses.slice( 0, 4 );
-						avg = avg / 14;
+						avg = avg / 15;
 						console.log( avg );
 						// console.log( fitnesses, success_index );
 
