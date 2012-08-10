@@ -76,12 +76,14 @@
 				// Restore the transform
 				ctx.restore();
 			}
+
 			var keyMap = {
 				"left": { "code" : 65, "on": false },
 				"up": { "code" : 87, "on": false },
 				"right": { "code" : 68, "on": false },
 				"down": { "code" : 83, "on": false },
-			}                     
+			}          
+
 			window.addEventListener("keydown", function(e) {
 				for(var i in keyMap) {
 					if( e.keyCode === keyMap[i].code ) {
@@ -99,8 +101,6 @@
 					}
 				}
 			}, false);
-
-			var counter = 0;
 
 			function Point( x, y ){
 
@@ -181,12 +181,13 @@
 			var next_point = new Point( 100, 100);
 
 			var index = 0;
+
 			var fitnesses = new Array(15);
 			var success = new Array(4);
-			var values = [ Math.random() , Math.random() ];
-			var avg = 0;	
 
-			var first = 2;
+			var values = [ Math.random() , Math.random() ];
+
+			var avg = 0;
 
 			var prev_vector = [ 0, 0, 0, 0, 0 ];
 			var prev_output = [ 0, 0 ];
@@ -198,17 +199,7 @@
 			    net_array[index].train([ { input : prev_vector, output: prev_output } ] );
 
 			    prev_vector = vector;
-			    prev_output = values;
-
-				// console.log( prev_vector, prev_output );
-				
-				if ( first > 0 ) {
-
-					// console.log( prev_vector, prev_output );
-					// console.log( vector, values );
-					first --;
-
-				}			    
+			    prev_output = values;		    
 
 				if ( ball.x < rectangle.x || ball.x > rectangle.x + rectangle.width || ball.y < rectangle.y || ball.y > rectangle.y + rectangle.height) {
 					
@@ -352,16 +343,12 @@
 				var rightTheta = MAX_ROTATION_PER_SECOND * rightForce || Math.random()*0.01;
 				
 				ball.theta += (leftTheta - rightTheta) * 3;
-
-				// ball.speed = (Math.abs(leftForce + rightForce)) / 2;
-				// console.log( ball.theta, leftTheta, rightTheta );
 				
 				ball.vx = 4 * Math.sin( ball.theta );
 				ball.vy = 4  * Math.cos( ball.theta );	
 
 				ball.x += ball.vx;
 				ball.y += ball.vy;	
-
 
 			}
 
