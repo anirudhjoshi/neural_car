@@ -28,7 +28,7 @@
 
 				net_array[i] = new brain.NeuralNetwork({
    						hiddenLayers: [8],
-   						learningRate: 0.6
+   						learningRate: 0.3
 					});
 
 				net_array[i].train([{input: [1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random()], output: [1*Math.random(),1*Math.random()]}])
@@ -57,7 +57,7 @@
 				"outerR" : 30,
 				"theta" : 0,
 				"vx" : 0,
-				"vy" : 10,
+				"vy" : 1,
 				"ax" : 0,
 				"ay" : 0,
 				"dx" : 0,
@@ -391,7 +391,7 @@
 
 						net_array[g] = new brain.NeuralNetwork({
    							hiddenLayers: [8],
-   							learningRate: 0.6
+   							learningRate: 0.3
 						});
 
 						net_array[g].train([{input: [1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random()], output: [1*Math.random(),1*Math.random()]}])				
@@ -400,7 +400,7 @@
 
 						net_array[g] = new brain.NeuralNetwork({
    							hiddenLayers: [8],
-   							learningRate: 0.6
+   							learningRate: 0.3
 						});
 
 						net_array[g].train([{input: [1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random()], output: [1*Math.random(),1*Math.random()]}])				
@@ -439,24 +439,21 @@
 
 				// console.log( leftForce );
 
-				var leftTheta = MAX_ROTATION_PER_SECOND * leftForce;
-				var rightTheta = MAX_ROTATION_PER_SECOND * rightForce;
-
-				if ( leftTheta > 0 ) {
+				var leftTheta = MAX_ROTATION_PER_SECOND * leftForce || 0;
+				var rightTheta = MAX_ROTATION_PER_SECOND * rightForce || 0;
 				
 				ball.theta += (leftTheta - rightTheta) * 1;
-				ball.speed = (Math.abs(leftForce + rightForce)) / 2;
+				// ball.speed = (Math.abs(leftForce + rightForce)) / 2;
 
-				}
-				// console.log( ball.theta );
+				// console.log( ball.theta, leftTheta, rightTheta );
 				
-				ball.vx += Math.sin( ball.theta );
-				ball.vy += Math.cos( ball.theta );	
+				ball.vx = 4 * Math.sin( ball.theta );
+				ball.vy = 4  * Math.cos( ball.theta );	
 
-				if ( ball.vx < speed_win && ball.vy < speed_win){
-					ball.x += ball.vx * 2;
-					ball.y += ball.vy * 2;	
-				}
+				// if ( ball.vx < speed_win && ball.vy < speed_win){
+				ball.x += ball.vx;
+				ball.y += ball.vy;	
+				// }
 
 				// console.log( ball.x, ball.y, ball.vx, ball.vy );
 
@@ -517,12 +514,12 @@
 
 				baby1 = new brain.NeuralNetwork({
    						hiddenLayers: [8],
-   						learningRate: 0.6
+   						learningRate: 0.3
 					});
 				baby1.train([{input: [1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random()], output: [1*Math.random(),1*Math.random()]}])
 				baby2 = new brain.NeuralNetwork({
    						hiddenLayers: [8],
-   						learningRate: 0.6
+   						learningRate: 0.3
 					});
 
 				
@@ -628,7 +625,7 @@
 
 							drawFeeler( ip );
 
-							vector[i] = Math.sqrt( Math.pow( ip.x - first_point.x, 2 ) + Math.pow(ip.y - first_point.y, 2) ) / line_length;
+							vector[i] = 1 - Math.sqrt( Math.pow( ip.x - first_point.x, 2 ) + Math.pow(ip.y - first_point.y, 2) ) / line_length;
 
 
 						} else {
