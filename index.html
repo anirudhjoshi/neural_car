@@ -51,7 +51,7 @@
 				"outerR" : 30,
 				"theta" : 0,
 				"vx" : 0,
-				"vy" : 1,
+				"vy" : 0,
 				"ax" : 0,
 				"ay" : 0,
 				"dx" : 0,
@@ -186,11 +186,16 @@
 			var values = [ Math.random() , Math.random() ];
 			var avg = 0;	
 
-			function updateBall(){
+			var first = true;
 
-				ball.vx = ball.speed * Math.sin( ball.theta );
-				ball.vy = ball.speed * Math.cos( ball.theta );				
+			function updateBall(){
 				
+				if ( first ) {
+
+					console.log( vector, values );
+					first = false;
+
+				}
 				// console.log( vector, values );
 
 				values = net_array[index].run( vector );
@@ -335,10 +340,10 @@
 				var rightForce = values[1];
 				var MAX_ROTATION_PER_SECOND = 0.05;
 
-				var leftTheta = MAX_ROTATION_PER_SECOND * leftForce || 0;
-				var rightTheta = MAX_ROTATION_PER_SECOND * rightForce || 0;
+				var leftTheta = MAX_ROTATION_PER_SECOND * leftForce || Math.random()*0.01;
+				var rightTheta = MAX_ROTATION_PER_SECOND * rightForce || Math.random()*0.01;
 				
-				ball.theta += (leftTheta - rightTheta) * 1;
+				ball.theta += (leftTheta - rightTheta) * 3;
 
 				// ball.speed = (Math.abs(leftForce + rightForce)) / 2;
 				// console.log( ball.theta, leftTheta, rightTheta );
