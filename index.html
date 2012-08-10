@@ -31,7 +31,7 @@
    						learningRate: 0.6
 					});
 
-				net_array[i].train([{input: [100*Math.random(), 100*Math.random(), 100*Math.random(), 100*Math.random(), 100*Math.random()], output: [1*Math.random(),1*Math.random()]}])
+				net_array[i].train([{input: [1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random()], output: [1*Math.random(),1*Math.random()]}])
 
 			}
 
@@ -50,7 +50,7 @@
 
 			var ctx = canvas.getContext("2d");
 			var ball = {
-				"x" : 150,
+				"x" : 135,
 				"y" : 150,
 				"speed" : speed_win,
 				"radius" : 10,
@@ -66,7 +66,7 @@
 			var rectangle = {
 				"x" : 100,
 				"y" : 100,
-				"width" : 140,
+				"width" : 70,
 				"height" : canvas.height 
 
 			}
@@ -110,8 +110,8 @@
 
 				ball.theta += 0.01;
 
-				ball.vx = ball.speed * Math.sin( ball.theta );
-				ball.vy = ball.speed * Math.cos( ball.theta );
+				// ball.vx = ball.speed * Math.sin( ball.theta );
+				// ball.vy = ball.speed * Math.cos( ball.theta );
 
 			}
 
@@ -119,8 +119,7 @@
 
 				ball.theta -= 0.01;
 
-				ball.vx = ball.speed * Math.sin( ball.theta );
-				ball.vy = ball.speed * Math.cos( ball.theta );
+
 
 			}			
 
@@ -213,6 +212,9 @@
 
 			function updateBall(){
 
+				ball.vx = ball.speed * Math.sin( ball.theta );
+				ball.vy = ball.speed * Math.cos( ball.theta );				
+
 				// if ( counter == nets )
 				// 	counter = 0
 				// counter++;
@@ -234,7 +236,7 @@
 					fitness = ball.y - rectangle.y;
 
 
-					fitnesses[index] = fitness;
+					fitnesses[index] = { "fitness": fitness, "index" : index };
 
 					avg += fitness;
 					
@@ -246,7 +248,7 @@
 				"outerR" : 30,
 				"theta" : 0,
 				"vx" : 0,
-				"vy" : 1,
+				"vy" : 0,
 				"ax" : 0,
 				"ay" : 0,
 				"dx" : 0,
@@ -258,36 +260,171 @@
 					if ( index < 14) {
 						index++;
 					}
+
+
 					else {
 
-						avg = avg / 15;
 
-						console.log( avg );
-						var s = 0;
-
-						for ( var d = 0; d < 14; d ++ ){
-
-							var cur_fit = fitnesses[d];
-
-							if ( cur_fit > avg ){
-
-								success[s] = net_array[d];
-								s++;
-
-							}
-
+						function compare(a,b) {
+						  if (a.fitness < b.fitness)
+						     return -1;
+						  if (a.fitness > b.fitness)
+						    return 1;
+						  return 0;
 						}
 
-						console.log( success );
+						fitnesses.sort(compare);
 
-						for ( var g = 0; g < 14; g++ ){
+						// function keys(obj)
+						// {
+						//     var keys = [];
 
-							var l_results = crossBreed( success[Math.floor(Math.random()*s)], success[Math.floor(Math.random()*s)] );
+						//     for(var key in obj)
+						//     {
+						//         if(obj.hasOwnProperty(key))
+						//         {
+						//             keys.push(key);
+						//         }
+						//     }
 
-							net_array[g] = l_results[Math.floor(Math.random()*2)];
+						//     return keys;
+						// }
+
+						// var sorted_fitness = keys(fitnesses).sort(); // ["a", "b", "z"]
+
+						fitnesses.reverse();
+
+						success_index = fitnesses.slice( 0, 4 );
 
 
-						}
+						console.log( fitnesses, success_index );
+
+						// var s = 0;
+
+						// var max = [ 0,0,0,0 ];
+
+						// for ( var d = 0; d < 14; d ++ ){
+
+						// 	var cur_fit = fitnesses[d];
+
+						// 	if ( s > 3 )
+						// 		break;
+
+						// 	if ( cur_fit > max[s] ){
+
+						// 		success[s] = net_array[d];
+						// 		max[s] = cur_fit;
+
+						// 		s++;
+
+						// 	}
+
+						// }
+
+				// Find the 4 best genomes.
+						// this->GetBestCases(4, bestGenomes);
+
+						// Carry on the best dude.
+						// Mutate(bestDude);
+
+						success[0] =  net_array[success_index[0].index]
+						success[1] =  net_array[success_index[1].index]
+						success[2] =  net_array[success_index[2].index]
+						success[3] =  net_array[success_index[3].index]
+
+						var g = 0;
+
+						net_array[g] = success[0];
+
+						g++;
+
+						var l_results = crossBreed( success[0], success[1] );
+
+						net_array[g] = l_results[0];
+						g++;
+
+						net_array[g] = l_results[1];
+						g++;
+
+						var l2_results = crossBreed( success[0], success[2] );
+
+						net_array[g] = l2_results[0];
+						g++;
+
+						net_array[g] = l2_results[1];
+						g++;
+
+						var l3_results = crossBreed( success[0], success[3] );
+
+						net_array[g] = l3_results[0];
+						g++;
+
+						net_array[g] = l3_results[1];
+						g++;
+
+						var l4_results = crossBreed( success[1], success[2] );
+
+						net_array[g] = l4_results[0];
+						g++;
+
+						net_array[g] = l4_results[1];
+						g++;
+
+						var l5_results = crossBreed( success[1], success[3] );
+
+						net_array[g] = l5_results[0];
+						g++;
+
+						net_array[g] = l5_results[1];
+						g++;						
+
+						var l6_results = crossBreed( success[1], success[3] );
+
+
+						net_array[g] = l6_results[0];
+						g++;
+
+						net_array[g] = l6_results[1];
+						g++;
+
+
+
+						net_array[g] = new brain.NeuralNetwork({
+   							hiddenLayers: [8],
+   							learningRate: 0.6
+						});
+
+						net_array[g].train([{input: [1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random()], output: [1*Math.random(),1*Math.random()]}])				
+
+						g++;
+
+						net_array[g] = new brain.NeuralNetwork({
+   							hiddenLayers: [8],
+   							learningRate: 0.6
+						});
+
+						net_array[g].train([{input: [1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random()], output: [1*Math.random(),1*Math.random()]}])				
+
+
+						// Breed with genome 0.
+
+						// Mutate(baby1);
+						// Mutate(baby2);
+
+						// Breed with genome 1.
+
+
+
+						// console.log( success );
+
+						// for ( var g = 0; g < 14; g++ ){
+
+						// 	var l_results = crossBreed( success[Math.floor(Math.random()*s)], success[Math.floor(Math.random()*s)] );
+
+						// 	net_array[g] = l_results[Math.floor(Math.random()*2)];
+
+
+						// }
 
 						index = 0;
 
@@ -296,19 +433,45 @@
 				}
 				// console.log(values)
 
-				if ( values[0] - values[1] > 0.05 ){
+				var leftForce = values[0];
+				var rightForce = values[1];
+				var MAX_ROTATION_PER_SECOND = 0.05;
 
-					turnLeft()
+				// console.log( leftForce );
 
-					}
-				else if ( values[1] - values[0] > 0.05 ) {
+				var leftTheta = MAX_ROTATION_PER_SECOND * leftForce;
+				var rightTheta = MAX_ROTATION_PER_SECOND * rightForce;
 
-					turnRight()
+				if ( leftTheta > 0 ) {
+				
+				ball.theta += (leftTheta - rightTheta) * 1;
+				ball.speed = (Math.abs(leftForce + rightForce)) / 2;
 
-					}
+				}
+				// console.log( ball.theta );
+				
+				ball.vx += Math.sin( ball.theta );
+				ball.vy += Math.cos( ball.theta );	
 
-					console.log(values)
-				// console.log( values )
+				if ( ball.vx < speed_win && ball.vy < speed_win){
+					ball.x += ball.vx * 2;
+					ball.y += ball.vy * 2;	
+				}
+
+				// console.log( ball.x, ball.y, ball.vx, ball.vy );
+
+				// if ( values[0] - values[1] > 0.05 ){
+
+				// 	turnLeft()
+
+				// 	}
+				// else if ( values[1] - values[0] > 0.05 ) {
+
+				// 	turnRight()
+
+				// 	}
+
+
 				// console.log( values );
 
 
@@ -335,10 +498,10 @@
 				// }else if(ball.vy < -5){
 				// 	ball.dy=0;
 				// }
-				ball.vx += ball.ax / 10;
-				ball.vy += ball.ay / 10;
-				ball.x += ball.vx / 10;
-				ball.y += ball.vy / 10;
+				// ball.vx += ball.ax / 10;
+				// ball.vy += ball.ay / 10;
+				// ball.x += ball.vx / 10;
+				// ball.y += ball.vy / 10;
 
 			}
 
@@ -356,7 +519,7 @@
    						hiddenLayers: [8],
    						learningRate: 0.6
 					});
-				baby1.train([{input: [100*Math.random(), 100*Math.random(), 100*Math.random(), 100*Math.random(), 100*Math.random()], output: [1*Math.random(),1*Math.random()]}])
+				baby1.train([{input: [1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random()], output: [1*Math.random(),1*Math.random()]}])
 				baby2 = new brain.NeuralNetwork({
    						hiddenLayers: [8],
    						learningRate: 0.6
@@ -364,7 +527,7 @@
 
 				
 
-				baby2.train([{input: [100*Math.random(), 100*Math.random(), 100*Math.random(), 100*Math.random(), 100*Math.random()], output: [1*Math.random(),1*Math.random()]}])				
+				baby2.train([{input: [1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random()], output: [1*Math.random(),1*Math.random()]}])				
 
 				// console.log( baby1, baby2, g1, g2 );
 				// Go from start to crossover point, copying the weights from g1.
@@ -399,7 +562,7 @@
 				ctx.stroke();
 				ctx.fill();
 				ctx.beginPath();
-				ctx.arc(ball.x, ball.y, ball.outerR, 0, Math.PI*2, true);
+				// ctx.arc(ball.x, ball.y, ball.outerR, 0, Math.PI*2, true);
 				ctx.closePath();
 				ctx.stroke();
 			}
@@ -465,12 +628,12 @@
 
 							drawFeeler( ip );
 
-							vector[i] = Math.sqrt( Math.pow( ip.x - first_point.x, 2 ) + Math.pow(ip.y - first_point.y, 2) );
+							vector[i] = Math.sqrt( Math.pow( ip.x - first_point.x, 2 ) + Math.pow(ip.y - first_point.y, 2) ) / line_length;
 
 
 						} else {
 
-							vector[i] = line_length;
+							vector[i] = 1;
 
 						}
 
