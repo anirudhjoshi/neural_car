@@ -38,7 +38,7 @@
 			var canvas = document.getElementById("canvas");
 
 			canvas.width = window.innerWidth;
-			canvas.height = window.innerHeight;
+			canvas.height = window.innerHeight*3;
 
 			var speed_win = 60;
 
@@ -196,7 +196,7 @@
 			
 				values = net_array[index].run( vector );
 
-			    net_array[index].train([ { input : prev_vector, output: prev_output } ] );
+			    net_array[index].train([ { input : vector, output: prev_output } ] );
 
 			    prev_vector = vector;
 			    prev_output = values;		    
@@ -339,10 +339,10 @@
 				var rightForce = values[1];
 				var MAX_ROTATION_PER_SECOND = 0.05;
 
-				var leftTheta = MAX_ROTATION_PER_SECOND * leftForce || Math.random()*0.01;
-				var rightTheta = MAX_ROTATION_PER_SECOND * rightForce || Math.random()*0.01;
+				var leftTheta = MAX_ROTATION_PER_SECOND * leftForce || 0.01*Math.random();
+				var rightTheta = MAX_ROTATION_PER_SECOND * rightForce || 0;
 				
-				ball.theta += (leftTheta - rightTheta) * 3;
+				ball.theta += (leftTheta - rightTheta) * 1;
 				
 				ball.vx = 4 * Math.sin( ball.theta );
 				ball.vy = 4  * Math.cos( ball.theta );	
