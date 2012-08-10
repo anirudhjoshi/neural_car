@@ -23,6 +23,49 @@
 			var nets = 15;
 			var net_array = new Array(nets);
 
+			var quats = new Array(5);
+
+			var quat = new Quatenrion( new Line( new Point( 100, 50), new Point( 100, 100 ) ), new Line( new Point( 150 , 50 ), new Point( 150 , 100  ) ) );
+
+
+			for ( var i = 0; i < quats.length; i++ ){
+
+				if ( i == 0 ){
+					old_quat = quat;
+				} else {
+
+					old_quat = quats[i-1];
+
+				}
+
+				var new_quat = new Quatenrion( old_quat.line2, new Line( new Point( 150 + i * 10, 50 + i * 10), new Point( 150 + i * 20, 100 + i * 20 ) ) );
+
+				quats[i] = new_quat;
+			}
+
+
+			function drawQuatenrion( q ) {
+
+				//draw a circle
+				ctx.beginPath();
+				ctx.strokeStyle = "white";
+				ctx.lineWidth = 3;
+				ctx.fillStyle = "black";
+				ctx.moveTo( q.line1.point1.x, q.line1.point1.y )
+				ctx.lineTo( q.line1.point2.x, q.line1.point2.y )
+				ctx.lineTo( q.line2.point2.x, q.line2.point2.y )
+				ctx.lineTo( q.line2.point1.x, q.line2.point1.y )
+				ctx.lineTo( q.line1.point1.x, q.line1.point1.y )
+				ctx.closePath();
+				ctx.stroke();
+				ctx.fill();
+				ctx.beginPath();
+				// ctx.arc(ball.x, ball.y, ball.outerR, 0, Math.PI*2, true);
+				ctx.closePath();
+				ctx.stroke();				
+
+			}
+
 
 			for ( var i = 0; i < nets; i ++ ) {
 
@@ -115,6 +158,14 @@
 				this.point2 = point2;
 
 			}
+
+			function Quatenrion( line1, line2 ){
+
+				this.line1 = line1;
+				this.line2 = line2;
+
+			}
+		
 
 			// http://actionsnippet.com/?p=956
 
@@ -470,6 +521,14 @@
 
 				drawRectangle();
 				drawBall();
+
+
+			for ( var i = 0; i < quats.length; i++ ){
+
+				drawQuatenrion( quats[i] );
+				// console.log(quats[i]);
+
+			}
 
 				first_point.x = ball.x;
 				first_point.y = ball.y;
