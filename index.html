@@ -35,12 +35,6 @@
 
 			}
 
-			for ( var i = 0; i < nets; i ++ ) {
-
-				// console.log( net_array[i].run( [0, 0, 0, 0, 0] ) );
-
-			}
-
 			var canvas = document.getElementById("canvas");
 
 			canvas.width = window.innerWidth;
@@ -105,23 +99,6 @@
 					}
 				}
 			}, false);
-
-			function turnLeft(){
-
-				ball.theta += 0.01;
-
-				// ball.vx = ball.speed * Math.sin( ball.theta );
-				// ball.vy = ball.speed * Math.cos( ball.theta );
-
-			}
-
-			function turnRight(){
-
-				ball.theta -= 0.01;
-
-
-
-			}			
 
 			var counter = 0;
 
@@ -215,20 +192,7 @@
 				ball.vx = ball.speed * Math.sin( ball.theta );
 				ball.vy = ball.speed * Math.cos( ball.theta );				
 
-				// if ( counter == nets )
-				// 	counter = 0
-				// counter++;
-
-				// if (counter > 250 )
-				// 	counter = 0
-
-
-
 				var values = net_array[index].run( vector );
-				// console.log(values)
-
-
-				// fitness++;
 
 
 				if ( ball.x < rectangle.x || ball.x > rectangle.x + rectangle.width || ball.y < rectangle.y || ball.y > rectangle.y + rectangle.height) {
@@ -240,29 +204,28 @@
 
 					avg += fitness;
 					
-			ball = {
-				"x" : 150,
-				"y" : 150,
-				"speed" : speed_win,
-				"radius" : 10,
-				"outerR" : 30,
-				"theta" : 0,
-				"vx" : 0,
-				"vy" : 0,
-				"ax" : 0,
-				"ay" : 0,
-				"dx" : 0,
-				"dy" : 0
-			}					
+					ball = {
+						"x" : 150,
+						"y" : 150,
+						"speed" : speed_win,
+						"radius" : 10,
+						"outerR" : 30,
+						"theta" : 0,
+						"vx" : 0,
+						"vy" : 0,
+						"ax" : 0,
+						"ay" : 0,
+						"dx" : 0,
+						"dy" : 0
+					}					
 
 					fitness = 0;
 
 					if ( index < 14) {
+
 						index++;
-					}
 
-
-					else {
+					} else {
 
 
 						function compare(a,b) {
@@ -275,57 +238,12 @@
 
 						fitnesses.sort(compare);
 
-						// function keys(obj)
-						// {
-						//     var keys = [];
-
-						//     for(var key in obj)
-						//     {
-						//         if(obj.hasOwnProperty(key))
-						//         {
-						//             keys.push(key);
-						//         }
-						//     }
-
-						//     return keys;
-						// }
-
-						// var sorted_fitness = keys(fitnesses).sort(); // ["a", "b", "z"]
-
 						fitnesses.reverse();
 
 						success_index = fitnesses.slice( 0, 4 );
 
 
 						console.log( fitnesses, success_index );
-
-						// var s = 0;
-
-						// var max = [ 0,0,0,0 ];
-
-						// for ( var d = 0; d < 14; d ++ ){
-
-						// 	var cur_fit = fitnesses[d];
-
-						// 	if ( s > 3 )
-						// 		break;
-
-						// 	if ( cur_fit > max[s] ){
-
-						// 		success[s] = net_array[d];
-						// 		max[s] = cur_fit;
-
-						// 		s++;
-
-						// 	}
-
-						// }
-
-				// Find the 4 best genomes.
-						// this->GetBestCases(4, bestGenomes);
-
-						// Carry on the best dude.
-						// Mutate(bestDude);
 
 						success[0] =  net_array[success_index[0].index]
 						success[1] =  net_array[success_index[1].index]
@@ -405,100 +323,31 @@
 
 						net_array[g].train([{input: [1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random()], output: [1*Math.random(),1*Math.random()]}])				
 
-
-						// Breed with genome 0.
-
-						// Mutate(baby1);
-						// Mutate(baby2);
-
-						// Breed with genome 1.
-
-
-
-						// console.log( success );
-
-						// for ( var g = 0; g < 14; g++ ){
-
-						// 	var l_results = crossBreed( success[Math.floor(Math.random()*s)], success[Math.floor(Math.random()*s)] );
-
-						// 	net_array[g] = l_results[Math.floor(Math.random()*2)];
-
-
-						// }
-
 						index = 0;
 
 						}
 
 				}
-				// console.log(values)
+
 
 				var leftForce = values[0];
 				var rightForce = values[1];
 				var MAX_ROTATION_PER_SECOND = 0.05;
 
-				// console.log( leftForce );
-
 				var leftTheta = MAX_ROTATION_PER_SECOND * leftForce || 0;
 				var rightTheta = MAX_ROTATION_PER_SECOND * rightForce || 0;
 				
 				ball.theta += (leftTheta - rightTheta) * 1;
-				// ball.speed = (Math.abs(leftForce + rightForce)) / 2;
 
+				// ball.speed = (Math.abs(leftForce + rightForce)) / 2;
 				// console.log( ball.theta, leftTheta, rightTheta );
 				
 				ball.vx = 4 * Math.sin( ball.theta );
 				ball.vy = 4  * Math.cos( ball.theta );	
 
-				// if ( ball.vx < speed_win && ball.vy < speed_win){
 				ball.x += ball.vx;
 				ball.y += ball.vy;	
-				// }
 
-				// console.log( ball.x, ball.y, ball.vx, ball.vy );
-
-				// if ( values[0] - values[1] > 0.05 ){
-
-				// 	turnLeft()
-
-				// 	}
-				// else if ( values[1] - values[0] > 0.05 ) {
-
-				// 	turnRight()
-
-				// 	}
-
-
-				// console.log( values );
-
-
-				// turnLeft();
-				// turnRight();
-				// console.log( ball.vx, ball.vy );
-				// if ( !ball.dx ) {
-				// 	ball.vx += 1;
-				// }else{
-				// 	ball.vx -= 1;
-				// }
-				// if ( !ball.dy){
-				// 	ball.vy += 1;
-				// }else{
-				// 	ball.vy -= 1;
-				// }
-				// if (ball.vx > 5){
-				// 	ball.dx = 1;
-				// }else if(ball.vx < -5){
-				// 	ball.dx = 0;
-				// }
-				// if (ball.vy>5){
-				// 	ball.dy=1;
-				// }else if(ball.vy < -5){
-				// 	ball.dy=0;
-				// }
-				// ball.vx += ball.ax / 10;
-				// ball.vy += ball.ay / 10;
-				// ball.x += ball.vx / 10;
-				// ball.y += ball.vy / 10;
 
 			}
 
@@ -637,17 +486,6 @@
 					}
 
 				}
-
-				// console.log( vector );
-
-
-
-					// console.log( ip );
- // segment, wall_line
-				// console.log( lineIntersection( segment, wall_line ) );
-
-				
-
 			}
 
 			var running = true;
