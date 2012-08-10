@@ -181,24 +181,27 @@
 			var next_point = new Point( 100, 100);
 
 			var index = 0;
-			var counter = 0;
 			var fitnesses = new Array(15);
-			var success = new Array(15);
-
-						var avg = 0;	
+			var success = new Array(4);
+			var values = [ Math.random() , Math.random() ];
+			var avg = 0;	
 
 			function updateBall(){
 
 				ball.vx = ball.speed * Math.sin( ball.theta );
 				ball.vy = ball.speed * Math.cos( ball.theta );				
+				
+				// console.log( vector, values );
 
-				var values = net_array[index].run( vector );
+				values = net_array[index].run( vector );
 
+			    net_array[index].train([ { input : vector, output: values } ] );
 
 				if ( ball.x < rectangle.x || ball.x > rectangle.x + rectangle.width || ball.y < rectangle.y || ball.y > rectangle.y + rectangle.height) {
 					
 					fitness = ball.y - rectangle.y;
 
+					avg += fitness;
 
 					fitnesses[index] = { "fitness": fitness, "index" : index };
 
@@ -241,9 +244,9 @@
 						fitnesses.reverse();
 
 						success_index = fitnesses.slice( 0, 4 );
-
-
-						console.log( fitnesses, success_index );
+						avg = avg / 14;
+						console.log( avg );
+						// console.log( fitnesses, success_index );
 
 						success[0] =  net_array[success_index[0].index]
 						success[1] =  net_array[success_index[1].index]
@@ -305,8 +308,6 @@
 						net_array[g] = l6_results[1];
 						g++;
 
-
-
 						net_array[g] = new brain.NeuralNetwork({
    							hiddenLayers: [8],
    							learningRate: 0.3
@@ -351,10 +352,26 @@
 
 			}
 
+			var mut_rate = 0.5;
+			var MAX_PERBETUATION = 1;
+
+			function mutate( g ) {
+
+				for (var i = 0; i < 8; ++i) {
+
+					// Generate a random chance of mutating the weight in the genome.
+					if (Math.random() < mut_rate){
+
+						g.weights[i] += (Math.random() * MAX_PERBETUATION);
+
+					}
+				}
+
+			}
+
 			//Galgo - neural networks http://www.youtube.com/watch?v=0Str0Rdkxxo
 
-			function crossBreed( g1, g2 )
-			{
+			function crossBreed( g1, g2 ) {
 				// Select a random cross over point.
 				// totalWeights = n1.weights.size();
 
@@ -365,13 +382,13 @@
    						hiddenLayers: [8],
    						learningRate: 0.3
 					});
+
 				baby1.train([{input: [1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random()], output: [1*Math.random(),1*Math.random()]}])
+
 				baby2 = new brain.NeuralNetwork({
    						hiddenLayers: [8],
    						learningRate: 0.3
 					});
-
-				
 
 				baby2.train([{input: [1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random(), 1*Math.random()], output: [1*Math.random(),1*Math.random()]}])				
 
@@ -479,7 +496,7 @@
 
 						} else {
 
-							vector[i] = 1;
+							vector[i] = 0;
 
 						}
 
@@ -496,8 +513,11 @@
 				update();
 				render();
 
-				if ( running )
+				if ( running ) {
+				
 					setTimeout( loop, 1000/60 );
+
+				}
 
 			}
 
