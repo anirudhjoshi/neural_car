@@ -28,28 +28,33 @@
 				return a * Math.pow( x - b, 2 ) + c;
 			}
 
-			var quats = new Array(5);
-
-			var quat = new Quatenrion( new Line( new Point( 100, 50), new Point( 100, 100 ) ), new Line( new Point( 150 , 50 ), new Point( 150 , 100  ) ) );
 
 
-			for ( var i = 0; i < quats.length; i++ ){
+			
+			// new_quat.line1.point1.y = canvas.height - 50;
+			// new_quat.line1.point2.y = canvas.height - 50;			
 
-				if ( i == 0 ){
-					old_quat = quat;
-				} else {
-
-					old_quat = quats[i-1];
-
-				}
-
-				y_val = quadratic( -1, 0, 10, i - quats.length );
+			// new_quat.line2.point1.y = canvas.height;
+			// new_quat.line2.point2.y = canvas.height;
 
 
-				var new_quat = new Quatenrion( old_quat.line2, new Line( new Point( 150 + y_val, 50 + y_val), new Point( 150 + y_val, 100 + y_val ) ) );
+			// for ( var i = 0; i < quats.length; i++ ){
 
-				quats[i] = new_quat;
-			}
+			// 	if ( i == 0 ){
+			// 		old_quat = quat;
+			// 	} else {
+
+			// 		old_quat = quats[i-1];
+
+			// 	}
+
+			// 	y_val = quadratic( -1, 0, 10, i - quats.length );
+
+
+			// 	var new_quat = new Quatenrion( old_quat.line2, new Line( new Point( 150 + y_val, 50 + y_val), new Point( 150 + y_val, 100 + y_val ) ) );
+
+			// 	quats[i] = new_quat;
+			// }
 
 
 			function drawQuatenrion( q ) {
@@ -89,18 +94,68 @@
 			var canvas = document.getElementById("canvas");
 
 			canvas.width = window.innerWidth;
-			canvas.height = window.innerHeight*3;
+			canvas.height = window.innerHeight;
+
+			var quats = new Array(6);
+
+			var quat = new Quatenrion( 
+
+										new Line( 
+
+												new Point(canvas.width / 4, 50), 
+												new Point( canvas.width / 4 + canvas.width * 1/2, 50 ) ),
+
+									   new Line( 
+
+												new Point(canvas.width / 4, 150), 
+												new Point( canvas.width / 4 + canvas.width * 1/2, 150 ) ) );
+
+			var new_quat = new Quatenrion( 
+
+										new Line( 
+
+												new Point(canvas.width / 4, canvas.height - 150), 
+												new Point( canvas.width / 4 + canvas.width * 1/2, canvas.height - 150 ) ),
+
+									   new Line( 
+
+												new Point(canvas.width / 4, canvas.height - 50), 
+												new Point( canvas.width / 4 + canvas.width * 1/2, canvas.height - 50 ) ) );	
+
+			var side_quat = new Quatenrion( 
+
+										new Line( 
+
+												quat.line1.point1, 
+												new Point( canvas.width / 12, canvas.height / 2 ) ),
+
+									   new Line( 
+
+												quat.line2.point1, 
+												new Point( canvas.width / 6, canvas.height / 2 ) ) );			
+
+			var side_quat2 = new Quatenrion( 
+
+										new Line( 
+
+												side_quat.line2.point2,
+												new_quat.line1.point1 ),
+
+									   new Line( 
+
+												side_quat.line1.point2,
+												new_quat.line2.point1 ) );																									
 
 			var speed_win = 60;
 
 			var ctx = canvas.getContext("2d");
 			var ball = {
-				"x" : 135,
-				"y" : 150,
+				"x" : canvas.width * 3 / 4,
+				"y" : 125,
 				"speed" : speed_win,
 				"radius" : 10,
 				"outerR" : 30,
-				"theta" : 0,
+				"theta" : -Math.PI / 2,
 				"vx" : 0,
 				"vy" : 0,
 				"ax" : 0,
@@ -531,12 +586,17 @@
 				drawBall();
 
 
-			for ( var i = 0; i < quats.length; i++ ){
+			// for ( var i = 0; i < quats.length; i++ ){
 
-				drawQuatenrion( quats[i] );
-				// console.log(quats[i]);
+			// 	drawQuatenrion( quats[i] );
+			// 	// console.log(quats[i]);
 
-			}
+			// }
+
+				drawQuatenrion( quat );
+				drawQuatenrion( new_quat );
+				drawQuatenrion( side_quat );
+				drawQuatenrion( side_quat2 );
 
 				first_point.x = ball.x;
 				first_point.y = ball.y;
